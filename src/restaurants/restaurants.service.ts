@@ -16,7 +16,7 @@ export class RestaurantsService {
     return restaurants;
   }
 
-  // Create a Restaurant => POST /restaurants
+  //  Create a Restaurant => POST /restaurants
   async create(restaurant: Restaurant): Promise<Restaurant> {
     const res = await this.restaurantModel.create(restaurant);
     return res;
