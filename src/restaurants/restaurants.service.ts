@@ -38,6 +38,12 @@ export class RestaurantsService {
 
   // Get a Restaurant by ID => GET /restaurants/:id
   async findById(id: string): Promise<Restaurant> {
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if (!isValidId) {
+      throw new NotFoundException('Wrong mongoose ID format.');
+    }
+
     const restaurant = await this.restaurantModel.findById(id);
 
     if (!restaurant) {
@@ -49,6 +55,12 @@ export class RestaurantsService {
 
   // Update a Restaurant by ID => PUT /restaurants/:id
   async updateById(id: string, restaurant: Restaurant): Promise<Restaurant> {
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if (!isValidId) {
+      throw new NotFoundException('Wrong mongoose ID format.');
+    }
+
     const updatedRestaurant = await this.restaurantModel.findByIdAndUpdate(
       id,
       restaurant,
@@ -64,6 +76,12 @@ export class RestaurantsService {
 
   // Delete a Restaurant by ID => DELETE /restaurants/:id
   async deleteById(id: string): Promise<Boolean> {
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if (!isValidId) {
+      throw new NotFoundException('Wrong mongoose ID format.');
+    }
+
     const deletedRestaurant = await this.restaurantModel.findByIdAndDelete(id);
 
     if (!deletedRestaurant) {
