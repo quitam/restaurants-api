@@ -7,7 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 import { User } from 'src/modules/auth/schemas/user.schema';
-import { Category } from 'src/utils/constants';
+import { RestaurantCategory } from 'src/utils/constants';
 
 export class CreateRestaurantDto {
   @IsNotEmpty()
@@ -31,8 +31,10 @@ export class CreateRestaurantDto {
   readonly address: string;
 
   @IsNotEmpty()
-  @IsEnum(Category, { message: 'Please ennter valid category.' })
-  readonly category: Category;
+  @IsEnum(RestaurantCategory, {
+    message: 'Please ennter valid restaurant category.',
+  })
+  readonly category: RestaurantCategory;
 
   @IsEmpty({ message: 'Cannot provide user ID.' })
   readonly owner: User;

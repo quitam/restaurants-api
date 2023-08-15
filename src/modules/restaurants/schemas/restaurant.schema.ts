@@ -1,9 +1,12 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/modules/auth/schemas/user.schema';
-import { Category } from 'src/utils/constants';
+import { RestaurantCategory } from 'src/utils/constants';
 import * as mongoose from 'mongoose';
+import { Meal } from 'src/modules/meal/schemas/meal.schema';
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class Restaurant {
   @Prop()
   name: string;
@@ -21,10 +24,13 @@ export class Restaurant {
   address: string;
 
   @Prop()
-  category: Category;
+  category: RestaurantCategory;
 
   @Prop()
   images?: object[];
+
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Meal' }])
+  menu?: Meal[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   owner: User;

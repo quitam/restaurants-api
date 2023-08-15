@@ -7,7 +7,7 @@ import {
   IsString,
 } from 'class-validator';
 import { User } from 'src/modules/auth/schemas/user.schema';
-import { Category } from 'src/utils/constants';
+import { RestaurantCategory } from 'src/utils/constants';
 
 export class UpdateRestaurantDto {
   @IsString()
@@ -30,9 +30,9 @@ export class UpdateRestaurantDto {
   @IsOptional()
   readonly address: string;
 
-  @IsEnum(Category, { message: 'Please ennter valid category' })
+  @IsEnum(RestaurantCategory, { message: 'Please ennter valid category' })
   @IsOptional()
-  readonly category: Category;
+  readonly category: RestaurantCategory;
 
   @IsEmpty({ message: 'Cannot provide user ID.' })
   @IsOptional()
