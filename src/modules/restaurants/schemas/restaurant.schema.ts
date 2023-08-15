@@ -1,5 +1,7 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { User } from 'src/modules/auth/schemas/user.schema';
 import { Category } from 'src/utils/constants';
+import * as mongoose from 'mongoose';
 
 @Schema()
 export class Restaurant {
@@ -23,6 +25,9 @@ export class Restaurant {
 
   @Prop()
   images?: object[];
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  owner: User;
 }
 
 export const RestaurantSchema = SchemaFactory.createForClass(Restaurant);

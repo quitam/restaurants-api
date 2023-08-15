@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Restaurant } from './schemas/restaurant.schema';
 import { Query as ExpressQuery } from 'express-serve-static-core';
+import { User } from '../auth/schemas/user.schema';
 
 @Injectable()
 export class RestaurantsService {
@@ -31,8 +36,10 @@ export class RestaurantsService {
   }
 
   // Create a Restaurant => POST /restaurants
-  async create(restaurant: Restaurant): Promise<Restaurant> {
-    const res = await this.restaurantModel.create(restaurant);
+  async create(restaurant: Restaurant, user: User): Promise<Restaurant> {
+    const data = Object.assign(restaurant, { owner: user._id });
+
+    const res = await this.restaurantModel.create(data);
     return res;
   }
 
@@ -55,12 +62,6 @@ export class RestaurantsService {
 
   // Update a Restaurant by ID => PUT /restaurants/:id
   async updateById(id: string, restaurant: Restaurant): Promise<Restaurant> {
-    const isValidId = mongoose.isValidObjectId(id);
-
-    if (!isValidId) {
-      throw new NotFoundException('Wrong mongoose ID format.');
-    }
-
     const updatedRestaurant = await this.restaurantModel.findByIdAndUpdate(
       id,
       restaurant,
