@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Restaurant } from './schemas/restaurant.schema';
@@ -14,7 +18,7 @@ export class RestaurantsService {
 
   // Get all Reataurants => GET /restaurants
   async findAll(query: ExpressQuery): Promise<Restaurant[]> {
-    const limit = 2;
+    const limit = 5;
     const page = query.page ? Number(query.page) : 1;
     const skip = (page - 1) * limit;
 
@@ -44,7 +48,7 @@ export class RestaurantsService {
     const isValidId = mongoose.isValidObjectId(id);
 
     if (!isValidId) {
-      throw new NotFoundException('Wrong mongoose ID format.');
+      throw new BadRequestException('Wrong mongoose ID format.');
     }
 
     const restaurant = await this.restaurantModel.findById(id);
@@ -58,33 +62,15 @@ export class RestaurantsService {
 
   // Update a Restaurant by ID => PUT /restaurants/:id
   async updateById(id: string, restaurant: Restaurant): Promise<Restaurant> {
-    const updatedRestaurant = await this.restaurantModel.findByIdAndUpdate(
-      id,
-      restaurant,
-      { new: true, runValidators: true },
-    );
-
-    if (!updatedRestaurant) {
-      throw new NotFoundException('Restaurant not found.');
-    }
-
-    return updatedRestaurant;
+    return await this.restaurantModel.findByIdAndUpdate(id, restaurant, {
+      new: true,
+      runValidators: true,
+    });
   }
 
   // Delete a Restaurant by ID => DELETE /restaurants/:id
-  async deleteById(id: string): Promise<Boolean> {
-    const isValidId = mongoose.isValidObjectId(id);
-
-    if (!isValidId) {
-      throw new NotFoundException('Wrong mongoose ID format.');
-    }
-
-    const deletedRestaurant = await this.restaurantModel.findByIdAndDelete(id);
-
-    if (!deletedRestaurant) {
-      throw new NotFoundException('Restaurant not found.');
-    }
-
-    return true;
+  async deleteById(id: string): Promise<{ deleted: Boolean }> {
+    await this.restaurantModel.findByIdAndDelete(id);
+    return { deleted: true };
   }
 }

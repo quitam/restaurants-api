@@ -67,7 +67,7 @@ export class RestaurantsController {
   async deleteRestaurantById(
     @Param('id') id: string,
     @CurrentUser() user: User,
-  ): Promise<Boolean> {
+  ): Promise<{ deleted: Boolean }> {
     const res = await this.restaurantsService.findById(id);
     if (res.owner.toString() !== user._id.toString()) {
       throw new ForbiddenException('You can not delete this restaurant');
